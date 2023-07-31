@@ -3,25 +3,50 @@ class Player:
     all = []
 
     def __init__(self, username):
-        self.username = username
+        self.username = username 
         self._results = []
         self._games_played = []
+        Player.all.append(self)
+    
+    @property 
+    def username(self): 
+        return self._username 
+    
+    @username.setter 
+    def username(self, username):
+        if isinstance (username, str) and 2 <= len(username) <= 16: 
+            self._username = username
+        else: 
+            raise Exception
         
     def results(self, new_result=None):
         from classes.result import Result
-        pass
-    
+        if new_result and isinstance (new_result, Result): 
+            self._results.append(new_result)
+        return self._results 
+
     def games_played(self, new_game=None):
         from classes.game import Game
-        pass
+        if new_game and isinstance (new_game, Game):
+            self._games_played.append(new_game)
+        return self._games_played 
     
     def played_game(self, game):
-        pass
+        return game in self._games_played 
     
     def num_times_played(self, game):
-        pass
+        return len([i for i in self._results if i.game == game])
     
     @classmethod
     def highest_scored(cls, game):
-        pass
-        
+        if cls.all: 
+            max_player = None
+            max_score = 0 
+            for i in cls.all: 
+                if game.average_score(i) > max_score: 
+                    max_player = i 
+                    max_score = game.average_score(i)
+            return max_player
+        return None 
+
+
